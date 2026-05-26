@@ -1,5 +1,5 @@
 import type { EntriesFilter, EntriesSortOrder } from "../types";
-import { entriesFilterToURLSearchParams } from "./entriesFilter";
+import { normalizeEntriesFilter } from "./entriesFilter";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -52,10 +52,20 @@ export function parseEntriesFilterFromSearch(search: string): EntriesFilter {
     return filter;
 }
 
-export function entriesFilterToSearchParams(
+export function entriesFilterToURLSearchParams(
     filter: EntriesFilter,
 ): URLSearchParams {
-    return entriesFilterToURLSearchParams(filter);
+    const { date_from, date_to, page, page_size, order } =
+        normalizeEntriesFilter(filter);
+    const params = new URLSearchParams();
+
+    if (date_from) params.set("date_from", date_from);
+    if (date_to) params.set("date_to", date_to);
+    params.set("page", String(page));
+    params.set("page_size", String(page_size));
+    params.set("order", order);
+
+    return params;
 }
 
 export function readEntriesFilterFromLocation(): EntriesFilter {
@@ -63,7 +73,7 @@ export function readEntriesFilterFromLocation(): EntriesFilter {
 }
 
 export function writeEntriesFilterToLocation(filter: EntriesFilter): void {
-    const qs = entriesFilterToSearchParams(filter).toString();
+    const qs = entriesFilterToURLSearchParams(filter).toString();
     const url = qs
         ? `${window.location.pathname}?${qs}`
         : window.location.pathname;

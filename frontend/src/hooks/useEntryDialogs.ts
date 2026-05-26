@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import type { UseMutationResult } from "@tanstack/react-query";
 import type { WorkEntry } from "../types";
 
 interface ModalState {
@@ -6,16 +7,15 @@ interface ModalState {
     entry?: WorkEntry;
 }
 
-interface MutationLike {
-    reset: () => void;
-    error: Error | null;
-    isPending: boolean;
-}
+export type EntryDialogMutation = Pick<
+    UseMutationResult<unknown, Error, unknown, unknown>,
+    "reset" | "error" | "isPending"
+>;
 
 interface Mutations {
-    createMutation: MutationLike;
-    updateMutation: MutationLike;
-    deleteMutation: MutationLike;
+    createMutation: EntryDialogMutation;
+    updateMutation: EntryDialogMutation;
+    deleteMutation: EntryDialogMutation;
 }
 
 export function useEntryDialogs({

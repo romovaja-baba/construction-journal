@@ -1,13 +1,22 @@
-import type { EntriesFilter } from "../types";
-import { normalizeEntriesFilter } from "./entriesFilter";
+import type { NormalizedEntriesFilter } from "../types";
+
+export function serializeEntriesFilterForKey(filter: NormalizedEntriesFilter) {
+    return {
+        date_from: filter.date_from ?? null,
+        date_to: filter.date_to ?? null,
+        page: filter.page,
+        page_size: filter.page_size,
+        order: filter.order,
+    };
+}
 
 export const queryKeys = {
-  entries: {
-    all: ["entries"] as const,
-    list: (filter: EntriesFilter) =>
-      ["entries", "list", normalizeEntriesFilter(filter)] as const,
-  },
-  workTypes: {
-    all: ["work-types"] as const,
-  },
+    entries: {
+        all: ["entries"] as const,
+        list: (filter: NormalizedEntriesFilter) =>
+            ["entries", "list", serializeEntriesFilterForKey(filter)] as const,
+    },
+    workTypes: {
+        all: ["work-types"] as const,
+    },
 };

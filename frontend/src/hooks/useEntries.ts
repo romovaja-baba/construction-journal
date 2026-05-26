@@ -1,23 +1,20 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { getEntries } from "../api/entries";
-import { normalizeEntriesFilter } from "../lib/entriesFilter";
 import { queryKeys } from "../lib/queryKeys";
-import type { EntriesFilter } from "../types";
+import type { NormalizedEntriesFilter } from "../types";
 
-export function useEntries(filter: EntriesFilter) {
-    const normalized = normalizeEntriesFilter(filter);
-
+export function useEntries(filter: NormalizedEntriesFilter) {
     const { data, ...rest } = useQuery({
         queryKey: queryKeys.entries.list(filter),
-        queryFn: () => getEntries(normalized),
+        queryFn: () => getEntries(filter),
         placeholderData: keepPreviousData,
     });
 
     return {
         data: data?.items ?? [],
         totalCount: data?.total ?? 0,
-        page: data?.page ?? normalized.page,
-        pageSize: data?.page_size ?? normalized.page_size,
+        page: data?.page ?? filter.page,
+        pageSize: data?.page_size ?? filter.page_size,
         ...rest,
     };
 }
