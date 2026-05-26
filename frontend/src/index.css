@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased bg-journal-bg text-journal-ink font-sans text-sm;
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full border border-journal-border bg-journal-surface px-2.5 py-1.5 text-sm text-journal-ink focus:outline-none focus:border-journal-border-dark focus:ring-1 focus:ring-journal-border-dark;
+  }
+
+  .btn-primary {
+    @apply border border-journal-accent bg-journal-accent px-4 py-2 text-sm font-medium text-white hover:bg-journal-accent-hover hover:border-journal-accent-hover disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply border border-journal-border bg-journal-surface px-4 py-2 text-sm font-medium text-journal-ink hover:border-journal-border-dark hover:bg-journal-subtle;
+  }
+
+  .panel {
+    @apply border border-journal-border bg-journal-surface;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4;
+  }
+
+  .alert-error {
+    @apply border border-red-800/30 bg-red-50 px-3 py-2 text-xs text-red-900;
+  }
+
+  .btn-danger {
+    @apply flex-1 border border-red-900 bg-red-900 px-4 py-2 text-sm font-medium text-white hover:bg-red-950 disabled:opacity-50;
+  }
+}
