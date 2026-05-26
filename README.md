@@ -14,7 +14,7 @@
 | **Формы**            | React Hook Form, Zod           | Валидация с минимумом ре-рендеров                                                          |
 | **Backend**          | Go, Gin                        | Один бинарник, предсказуемая производительность, простой REST                              |
 | **Данные**           | PostgreSQL, GORM               | Надёжное хранение связей «запись ↔ вид работ»; авто-миграции и seed справочника при старте |
-| **Продакшен**        | Docker, nginx                  | Статика фронта и прокси `/api` в одном контейнере; воспроизводимый запуск                  |
+| **Docker запуск**    | Docker, Vite preview server    | Быстрый запуск тестового стенда: frontend на `5173`, backend API на `8080`                |
 
 ---
 
@@ -29,10 +29,10 @@ docker compose up --build
 
 После сборки:
 
-| Сервис                            | URL                       |
-| --------------------------------- | ------------------------- |
-| Приложение (UI + API через nginx) | http://localhost          |
-| API напрямую (опционально)        | http://localhost:8080/api |
+| Сервис   | URL                       |
+| -------- | ------------------------- |
+| Frontend | http://localhost:5173     |
+| API      | http://localhost:8080/api |
 
 Остановка:
 
@@ -122,7 +122,6 @@ construction-journal/
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/                  # React-приложение
-│   ├── nginx.conf            # Прокси /api → backend (в Docker)
 │   └── Dockerfile
 ├── docker-compose.yml        # postgres, backend, frontend
 └── README.md

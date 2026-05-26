@@ -13,6 +13,14 @@ export function Modal({ onClose, title, children, maxWidth = 'md' }: Props) {
   const titleId = useId();
 
   useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  useEffect(() => {
     const handler = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
