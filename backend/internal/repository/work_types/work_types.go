@@ -1,4 +1,4 @@
-package repository
+package work_types
 
 import (
 	"errors"

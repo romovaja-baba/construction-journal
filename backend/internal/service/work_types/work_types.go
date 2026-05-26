@@ -1,19 +1,20 @@
-package service
+package work_types
 
 import (
 	"errors"
 	"fmt"
 
+	"journal/internal/converter"
 	"journal/internal/dto"
 	"journal/internal/models"
-	"journal/internal/repository"
+	"journal/internal/repository/work_types"
 )
 
 type WorkTypesService struct {
-	workTypes *repository.WorkTypesRepository
+	workTypes *work_types.WorkTypesRepository
 }
 
-func NewWorkTypesService(workTypes *repository.WorkTypesRepository) *WorkTypesService {
+func NewWorkTypesService(workTypes *work_types.WorkTypesRepository) *WorkTypesService {
 	return &WorkTypesService{workTypes: workTypes}
 }
 
@@ -22,7 +23,7 @@ func (s *WorkTypesService) List() ([]dto.WorkTypeResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	return dto.WorkTypesToResponse(types), nil
+	return converter.WorkTypesToResponse(types), nil
 }
 
 func (s *WorkTypesService) Create(req dto.CreateWorkTypeRequest) (dto.WorkTypeResponse, error) {
@@ -33,5 +34,5 @@ func (s *WorkTypesService) Create(req dto.CreateWorkTypeRequest) (dto.WorkTypeRe
 		}
 		return dto.WorkTypeResponse{}, err
 	}
-	return dto.WorkTypeToResponse(wt), nil
+	return converter.WorkTypeToResponse(wt), nil
 }

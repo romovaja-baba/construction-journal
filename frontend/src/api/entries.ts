@@ -10,9 +10,7 @@ export interface EntriesResponse {
 }
 
 export const getEntries = (filter: EntriesFilter): Promise<EntriesResponse> => {
-  const params = entriesFilterToURLSearchParams(filter, {
-    omitDefaults: false,
-  });
+  const params = entriesFilterToURLSearchParams(filter);
   return apiFetch<EntriesResponse>(`/entries?${params}`);
 };
 

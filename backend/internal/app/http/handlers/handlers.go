@@ -1,12 +1,15 @@
 package handlers
 
-import "journal/internal/service"
+import (
+	"journal/internal/service/entries"
+	"journal/internal/service/work_types"
+)
 
 type Handler struct {
-	entries   *service.EntriesService
-	workTypes *service.WorkTypesService
+	entries   *entries.EntriesService
+	workTypes *work_types.WorkTypesService
 }
 
-func New(entries *service.EntriesService, workTypes *service.WorkTypesService) *Handler {
+func New(entries *entries.EntriesService, workTypes *work_types.WorkTypesService) *Handler {
 	return &Handler{entries: entries, workTypes: workTypes}
 }

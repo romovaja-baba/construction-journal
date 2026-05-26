@@ -1,4 +1,4 @@
-package repository
+package entries
 
 import (
 	"errors"
@@ -76,7 +76,7 @@ func (r *EntriesRepository) Create(entry *models.WorkEntry) error {
 	return r.db.Preload("WorkType").First(entry, entry.ID).Error
 }
 
-func (r *EntriesRepository) Save(entry *models.WorkEntry) error {
+func (r *EntriesRepository) Update(entry *models.WorkEntry) error {
 	if err := r.db.Save(entry).Error; err != nil {
 		return err
 	}

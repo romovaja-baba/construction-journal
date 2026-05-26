@@ -1,4 +1,4 @@
-package service
+package entries
 
 import (
 	"errors"
@@ -6,9 +6,11 @@ import (
 	"strconv"
 	"time"
 
+	"journal/internal/converter"
 	"journal/internal/dto"
 	"journal/internal/models"
-	"journal/internal/repository"
+	"journal/internal/repository/entries"
+	"journal/internal/repository/work_types"
 )
 
 const (
@@ -19,11 +21,11 @@ const (
 )
 
 type EntriesService struct {
-	entries   *repository.EntriesRepository
-	workTypes *repository.WorkTypesRepository
+	entries   *entries.EntriesRepository
+	workTypes *work_types.WorkTypesRepository
 }
 
-func NewEntriesService(entries *repository.EntriesRepository, workTypes *repository.WorkTypesRepository) *EntriesService {
+func NewEntriesService(entries *entries.EntriesRepository, workTypes *work_types.WorkTypesRepository) *EntriesService {
 	return &EntriesService{entries: entries, workTypes: workTypes}
 }
 
@@ -44,7 +46,7 @@ func (s *EntriesService) List(dateFrom, dateTo, pageStr, pageSizeStr, orderStr s
 	}
 
 	return dto.EntriesListResponse{
-		Items:    dto.WorkEntriesToResponse(entries),
+		Items:    converter.WorkEntriesToResponse(entries),
 		Total:    total,
 		Page:     params.Page,
 		PageSize: params.PageSize,
@@ -70,7 +72,7 @@ func (s *EntriesService) Create(req dto.CreateEntryRequest) (dto.WorkEntryRespon
 	if err := s.entries.Create(&entry); err != nil {
 		return dto.WorkEntryResponse{}, err
 	}
-	return dto.WorkEntryToResponse(entry), nil
+	return converter.WorkEntryToResponse(entry), nil
 }
 
 func (s *EntriesService) Update(id uint, req dto.UpdateEntryRequest) (dto.WorkEntryResponse, error) {
@@ -96,10 +98,10 @@ func (s *EntriesService) Update(id uint, req dto.UpdateEntryRequest) (dto.WorkEn
 	entry.Unit = req.Unit
 	entry.ExecutorName = req.ExecutorName
 
-	if err := s.entries.Save(&entry); err != nil {
+	if err := s.entries.Update(&entry); err != nil {
 		return dto.WorkEntryResponse{}, err
 	}
-	return dto.WorkEntryToResponse(entry), nil
+	return converter.WorkEntryToResponse(entry), nil
 }
 
 func (s *EntriesService) Delete(id uint) error {
@@ -113,22 +115,22 @@ func (s *EntriesService) Delete(id uint) error {
 	return nil
 }
 
-func parseListFilter(dateFrom, dateTo, pageStr, pageSizeStr, orderStr string) (repository.ListEntriesParams, error) {
-	params := repository.ListEntriesParams{
+func parseListFilter(dateFrom, dateTo, pageStr, pageSizeStr, orderStr string) (entries.ListEntriesParams, error) {
+	params := entries.ListEntriesParams{
 		Page:     defaultEntriesPage,
 		PageSize: defaultEntriesPageSize,
 		Order:    defaultEntriesOrder,
 	}
 
 	if dateFrom != "" {
-		t, err := dto.ParseDate(dateFrom)
+		t, err := time.Parse("2006-01-02", dateFrom)
 		if err != nil {
 			return params, fmt.Errorf("%w: invalid date_from, expected YYYY-MM-DD", models.ErrInvalidInput)
 		}
 		params.DateFrom = &t
 	}
 	if dateTo != "" {
-		t, err := dto.ParseDate(dateTo)
+		t, err := time.Parse("2006-01-02", dateTo)
 		if err != nil {
 			return params, fmt.Errorf("%w: invalid date_to, expected YYYY-MM-DD", models.ErrInvalidInput)
 		}
@@ -184,7 +186,7 @@ func parsePagination(pageStr, pageSizeStr string) (int, int, error) {
 }
 
 func parseEntryDate(dateStr string) (time.Time, error) {
-	t, err := dto.ParseDate(dateStr)
+	t, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("%w: invalid date, expected YYYY-MM-DD", models.ErrInvalidInput)
 	}

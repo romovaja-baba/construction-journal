@@ -1,11 +1,19 @@
 package dto
 
 import (
-	"journal/internal/models"
 	"time"
 )
 
-const dateLayout = "2006-01-02"
+type EntriesListResponse struct {
+	Items    []WorkEntryResponse `json:"items"`
+	Total    int64               `json:"total"`
+	Page     int                 `json:"page"`
+	PageSize int                 `json:"page_size"`
+}
+
+type CreateWorkTypeRequest struct {
+	Name string `json:"name" binding:"required,min=1,max=100"`
+}
 
 type WorkTypeResponse struct {
 	ID   uint   `json:"id"`
@@ -38,46 +46,4 @@ type UpdateEntryRequest struct {
 	Volume       float64 `json:"volume"        binding:"required,gt=0"`
 	Unit         string  `json:"unit"          binding:"required"`
 	ExecutorName string  `json:"executor_name" binding:"required,min=1,max=150"`
-}
-
-func ParseDate(s string) (time.Time, error) {
-	return time.Parse(dateLayout, s)
-}
-
-func FormatDate(t time.Time) string {
-	return t.UTC().Format(dateLayout)
-}
-
-func WorkEntryToResponse(e models.WorkEntry) WorkEntryResponse {
-	return WorkEntryResponse{
-		ID:           e.ID,
-		Date:         FormatDate(e.Date),
-		WorkTypeID:   e.WorkTypeID,
-		WorkType:     WorkTypeToResponse(e.WorkType),
-		Volume:       e.Volume,
-		Unit:         e.Unit,
-		ExecutorName: e.ExecutorName,
-		CreatedAt:    e.CreatedAt,
-		UpdatedAt:    e.UpdatedAt,
-	}
-}
-
-func WorkEntriesToResponse(entries []models.WorkEntry) []WorkEntryResponse {
-	out := make([]WorkEntryResponse, len(entries))
-	for i, e := range entries {
-		out[i] = WorkEntryToResponse(e)
-	}
-	return out
-}
-
-func WorkTypeToResponse(wt models.WorkType) WorkTypeResponse {
-	return WorkTypeResponse{ID: wt.ID, Name: wt.Name}
-}
-
-func WorkTypesToResponse(types []models.WorkType) []WorkTypeResponse {
-	out := make([]WorkTypeResponse, len(types))
-	for i, wt := range types {
-		out[i] = WorkTypeToResponse(wt)
-	}
-	return out
 }
