@@ -6,91 +6,34 @@
 
 ## Стек
 
-| Слой                 | Технологии                     | Зачем                                                                                      |
-| -------------------- | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| **Frontend**         | React 18, TypeScript, Vite     |
-| **UI**               | Tailwind CSS                   | Единый внешний вид без тяжёлого UI-kit                                                     |
-| **Таблица и данные** | TanStack Table, TanStack Query | Сортировка и состояния загрузки без лишней обвязки                                         |
-| **Формы**            | React Hook Form, Zod           | Валидация с минимумом ре-рендеров                                                          |
-| **Backend**          | Go, Gin                        | Один бинарник, предсказуемая производительность, простой REST                              |
-| **Данные**           | PostgreSQL, GORM               | Надёжное хранение связей «запись ↔ вид работ»; авто-миграции и seed справочника при старте |
-| **Docker запуск**    | Docker, Vite preview server    | Быстрый запуск тестового стенда: frontend на `5173`, backend API на `8080`                |
+| Слой                 | Технологии                  | Зачем                                                                             |
+| -------------------- | --------------------------- | --------------------------------------------------------------------------------- |
+| **Frontend**         | React 18, TypeScript, Vite  |                                                                                   |
+| **UI**               | Tailwind CSS                | Единый внешний вид без тяжёлого UI-kit                                            |
+| **Получение данных** | TanStack Query              | Удобная работа с API                                                              |
+| **Формы**            | React Hook Form, Zod        | Валидация с минимумом ре-рендеров                                                 |
+| **Backend**          | Go, Gin                     | Предсказуемая производительность, простой REST                                    |
+| **Данные**           | PostgreSQL, GORM            | Надёжное хранение реляционных связей; авто-миграции и seed справочника при старте |
+| **Docker запуск**    | Docker, Vite preview server | Быстрый запуск тестового стенда из трех контейнеров: frontend, backend, БД        |
 
 ---
 
 ## Быстрый запуск
 
-Нужны [Docker](https://docs.docker.com/get-docker/) и Docker Compose v2.
+Нужны Docker и Docker Compose.
 
 ```bash
+git clone https://github.com/romovaja-baba/construction-journal.git
 cd construction-journal
 docker compose up --build
 ```
 
 После сборки:
 
-| Сервис   | URL                       |
-| -------- | ------------------------- |
-| Frontend | http://localhost:5173     |
-| API      | http://localhost:8080/api |
-
-Остановка:
-
-```bash
-docker compose down
-```
-
-Удалить данные БД:
-
-```bash
-docker compose down -v
-```
-
----
-
-## Локальная разработка
-
-### 1. База данных
-
-```bash
-docker compose up -d postgres
-```
-
-Поднимется только PostgreSQL: `journal` / `journal`, БД `journal`, порт `5432`.
-
-### 2. Backend
-
-```bash
-cd backend
-```
-
-Создайте `.env` (или экспортируйте переменные):
-
-```env
-DB_HOST=localhost
-DB_USER=journal
-DB_PASSWORD=journal
-DB_NAME=journal
-DB_PORT=5432
-PORT=8080
-```
-
-```bash
-go mod tidy
-go run ./cmd/api
-```
-
-API: http://localhost:8080/api — при первом запуске GORM создаст таблицы и заполнит справочник видов работ.
-
-### 3. Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-UI: http://localhost:5173 — запросы к `/api` проксируются на backend (см. `frontend/vite.config.ts`).
+| Сервис   | URL                                                    |
+| -------- | ------------------------------------------------------ |
+| Frontend | [http://localhost:5173](http://localhost:5173)         |
+| API      | [http://localhost:8080/api](http://localhost:8080/api) |
 
 ---
 
@@ -99,7 +42,7 @@ UI: http://localhost:5173 — запросы к `/api` проксируются 
 | Метод    | Путь                                                       | Описание                                                                                   |
 | -------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | `GET`    | `/api/work-types`                                          | Список видов работ                                                                         |
-| `POST`   | `/api/work-types`                                          | Добавить вид работ                                                                         |
+| `POST`   | `/api/work-types`                                          | Добавить вид работ (не используется в UI)                                                  |
 | `GET`    | `/api/entries?date_from=&date_to=&page=&page_size=&order=` | Журнал (фильтр, пагинация, сортировка по дате: `order=asc` \| `desc`, по умолчанию `desc`) |
 | `POST`   | `/api/entries`                                             | Создать запись                                                                             |
 | `PUT`    | `/api/entries/:id`                                         | Обновить запись                                                                            |
